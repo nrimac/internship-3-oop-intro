@@ -11,7 +11,7 @@ namespace EventApp
         public int BrojMobitela { get; set; }
         public Person()
         {
-            EnterPersonInfo();
+            InputPersonInfo();
         }
         public Person(string firstName, string lastName, int oib, int brojMobitela)
         {
@@ -20,7 +20,7 @@ namespace EventApp
             OIB = oib;
             BrojMobitela = brojMobitela;
         }
-        public void EnterPersonInfo()
+        public void InputPersonInfo()
         {
             Console.Write("Unesite ime osobe:");
             FirstName = Console.ReadLine();
@@ -35,7 +35,7 @@ namespace EventApp
     class Event
     {
         public string Name { get; set; } = "Naziv eventa";
-        public DateTime StartTime { get; set; } = new DateTime(2020, 12, 6, 17, 0, 0);
+        public DateTime StartTime { get; set; } = new DateTime(2020, 12, 6, 17, 0, 1);
         public DateTime EndTime { get; set; } = new DateTime(2020, 12, 6, 20, 0, 0);
         public int EventType { get; set; } = (int)eventType.Coffee;
         public List<Person> AttendingGuests { get; set; } = new List<Person>();
@@ -45,6 +45,76 @@ namespace EventApp
             StartTime = startTime;
             EndTime = endTime;
             EventType = eventType;
+        }
+        public Event()
+        {
+            InputEventDetails();
+        }
+        public void InputEventDetails()
+        {
+            Console.Write("Unesite ime novoga eventa:");
+            Name = Console.ReadLine();
+            
+            Console.Write("Unesite datum i vrijeme početka novoga eventa:");
+            while (true)
+            {
+                try 
+                { 
+                    StartTime = DateTime.Parse(Console.ReadLine());
+                    break;
+                }
+                catch 
+                { 
+                    Console.WriteLine("Nevrijedeći datum i vrijeme!\nPonovo unesite datum i vrijeme starta eventa:");
+                }
+            }
+            Console.WriteLine(StartTime.Minute);
+
+            Console.Write("Unesite datum i vrijeme završetka novoga eventa:");
+            while (true)
+            {
+                try
+                {
+                    EndTime = DateTime.Parse(Console.ReadLine());
+                    break;
+                }
+                catch
+                {
+                    Console.WriteLine("Nevrijedeći datum i vrijeme!\nPonovo unesite datum i vrijeme zavrsetka eventa:");
+                }
+            }
+
+            while (true)
+            {
+                Console.Write("Unesite tip novoga eventa (Coffee, Lecture, Concert, Study Session):");
+                var eventTypeName = Console.ReadLine();
+
+                eventTypeName = eventTypeName.Trim();
+                eventTypeName = eventTypeName.ToLower();
+
+                switch (eventTypeName)
+                {
+                    case "coffee":
+                        EventType = (int)eventType.Coffee;
+                        return;
+
+                    case "lecture":
+                        EventType = (int)eventType.Lecture;
+                        return;
+
+                    case "concert":
+                        EventType = (int)eventType.Concert;
+                        return;
+
+                    case "studysession":
+                        EventType = (int)eventType.StudySession;
+                        return;
+
+                    default:
+                        Console.WriteLine("\nNe postoji uneseni tip eventa!\n");
+                        break;
+                }
+            }
         }
     }
     public enum eventType
@@ -56,6 +126,26 @@ namespace EventApp
     }
     class Program
     {
+        public static bool Confirm()
+        {
+            Console.WriteLine("Jeste li sigurni da zelite nastaviti? y/n");
+
+            while (true)
+            {
+                var userResponse = Console.ReadLine();
+
+                switch (userResponse)
+                {
+                    case "y":
+                        return true;
+                    case "n":
+                        return false;
+                    default:
+                        Console.WriteLine("Krivi unos! Molim vas unesite y ili n (ovisno o tome zelite li nastaviti).");
+                        break;
+                }
+            }
+        }
         public static void PrintOptions()
         {
             Console.Clear();
@@ -67,6 +157,45 @@ namespace EventApp
                 "5. Uklanjanje osobe sa eventa\n" +
                 "6. Ispis detalja o eventu\n" +
                 "7. Izlaz iz aplikacije\n");
+        }
+        public static void AddEvent(List<Event> allEvents)
+        {
+            if (Confirm() == true)
+            {
+                var newEvent = new Event();
+
+                allEvents.Add(newEvent);
+
+                Console.WriteLine("Event dodan!");
+            }
+        }
+        public static void DeleteEvent(List<Event> allEvents)
+        {
+            if (Confirm() == true)
+            {
+                Console.WriteLine("Popis eventova:");
+                foreach (var Event in allEvents)
+                {
+                    Console.WriteLine(Event.Name);
+                }
+
+                Console.WriteLine("\nKoji event zelite izbrisati:");
+                var userChoice = Console.ReadLine();
+                userChoice = userChoice.Trim().ToLower();
+
+                foreach (var Event in allEvents)
+                {
+                    if(userChoice==Event.Name.ToLower().Trim())
+                    {
+                        allEvents.Remove(Event);
+                        Console.WriteLine("Event izbrisan!");
+                        return;
+                    }
+                }
+
+                Console.WriteLine("Event s upisanim imenom ne postoji!");
+                Console.ReadKey();
+            }
         }
         static void Main(string[] args)
         {
@@ -104,8 +233,10 @@ namespace EventApp
                     switch (userChoice)
                     {
                         case 1:
+                            AddEvent(allEvents);
                             break;
                         case 2:
+                            DeleteEvent(allEvents);
                             break;
                         case 3:
                             break;
@@ -116,6 +247,7 @@ namespace EventApp
                         case 6:
                             break;
                         case 7:
+                            Console.WriteLine("Gasim se...");
                             return;
                         default:
                             break;
@@ -124,7 +256,7 @@ namespace EventApp
                 catch
                 {
                     //Add message here
-                    Console.WriteLine("");
+                    Console.WriteLine("Kys");
                     Console.ReadKey();
                 }
             }
