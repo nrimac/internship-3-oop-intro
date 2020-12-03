@@ -21,13 +21,6 @@ namespace EventApp
             var concertEvent = new Event("Nirvana-Koncert", "Concert", defaultTime.AddDays(3), defaultTime.AddDays(3).AddHours(1));
             var studySessionEvent = new Event("Study Group", "Study Session", defaultTime.AddDays(4), defaultTime.AddDays(4).AddHours(1));
 
-            var allEvents = new List<Event>();
-
-            allEvents.Add(coffeeEvent);
-            allEvents.Add(lectureEvent);
-            allEvents.Add(concertEvent);
-            allEvents.Add(studySessionEvent);
-
             var per1 = new Person("Ante", "Antić", 11111, 098111111);
             var per2 = new Person("Mate", "Matić", 22222, 098222222);
             var per3 = new Person("Marko", "Markić", 33333, 098333333);
@@ -59,25 +52,24 @@ namespace EventApp
                 switch (userChoice)
                 {
                     case 1:
-                        Admin.AddEvent(allEvents,eventsGuests);
+                        Admin.AddEvent(eventsGuests);
                         break;
                     case 2:
-                        Admin.DeleteEvent(allEvents);
+                        Admin.DeleteEvent(eventsGuests);
                         break;
                     case 3:
-                        Admin.EditEvent(allEvents);
+                        Admin.EditEvent(eventsGuests);
                         break;
                     case 4:
-                        Admin.AddGuest(allEvents,allPeople,eventsGuests);
+                        Admin.AddGuest(allPeople,eventsGuests);
                         break;
                     case 5:
-                        Admin.RemoveGuest(allEvents,allPeople,eventsGuests);
+                        Admin.RemoveGuest(allPeople,eventsGuests);
                         break;
                     case 6:
-                        Admin.EventDetails(allEvents,eventsGuests);
+                        Admin.EventDetails(eventsGuests);
                         break;
                     case 7:
-                        Console.WriteLine("Gasim se...");
                         return;
                     default:
                         break;
