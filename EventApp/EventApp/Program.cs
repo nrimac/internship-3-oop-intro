@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EventApp
 {
-    public enum eventType
+    public enum typesOfEvents
     {
         Coffee,
         Lecture,
@@ -16,10 +16,10 @@ namespace EventApp
         {
             var defaultTime = new DateTime(2020, 12, 6, 17, 0, 0);
 
-            var coffeeEvent = new Event("Kavana", "Coffee", defaultTime.AddDays(1), defaultTime.AddDays(1).AddHours(1));
-            var lectureEvent = new Event("DUMP-Predavanje", "Lecture", defaultTime.AddDays(2), defaultTime.AddDays(2).AddHours(1));
-            var concertEvent = new Event("Nirvana-Koncert", "Concert", defaultTime.AddDays(3), defaultTime.AddDays(3).AddHours(1));
-            var studySessionEvent = new Event("Study Group", "Study Session", defaultTime.AddDays(4), defaultTime.AddDays(4).AddHours(1));
+            var coffeeEvent = new Event("Kavana", (int)typesOfEvents.Coffee, defaultTime.AddDays(1), defaultTime.AddDays(1).AddHours(1));
+            var lectureEvent = new Event("DUMP-Predavanje", (int)typesOfEvents.Lecture, defaultTime.AddDays(2), defaultTime.AddDays(2).AddHours(1));
+            var concertEvent = new Event("Nirvana-Koncert", (int)typesOfEvents.Concert, defaultTime.AddDays(3), defaultTime.AddDays(3).AddHours(1));
+            var studySessionEvent = new Event("Study Group", (int)typesOfEvents.StudySession, defaultTime.AddDays(4), defaultTime.AddDays(4).AddHours(1));
 
             var per1 = new Person("Ante", "Antić", 11111, 098111111);
             var per2 = new Person("Mate", "Matić", 22222, 098222222);

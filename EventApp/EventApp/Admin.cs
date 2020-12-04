@@ -44,11 +44,19 @@ namespace EventApp
         }
         public static void PrintEvents(Dictionary<Event, List<Person>> eventsGuests)
         {
-            Console.WriteLine("Popis eventova:");
-            foreach (var item in eventsGuests)
+            if (eventsGuests.Count == 0)
             {
-                Console.WriteLine(item.Key.Name);
+                Console.WriteLine("Nema upisanih eventova.");
             }
+            else
+            {
+                Console.WriteLine("Popis eventova:");
+                foreach (var item in eventsGuests)
+                {
+                    Console.WriteLine(item.Key.Name);
+                }
+            }
+
             Console.WriteLine();
         }
         public static void PrintPeople(List<Person> allPeople)

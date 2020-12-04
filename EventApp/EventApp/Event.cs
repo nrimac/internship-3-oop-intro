@@ -9,14 +9,35 @@ namespace EventApp
         public string Name { get; set; } = "Naziv eventa";
         public DateTime StartTime { get; set; } = new DateTime(2020, 12, 6, 17, 0, 1);
         public DateTime EndTime { get; set; } = new DateTime(2020, 12, 6, 20, 0, 0);
-        public string EventType { get; set; } = "Coffee";
+        public string EventType { 
+            get 
+            {
+                switch (_eventType)
+                {
+                    case (int)typesOfEvents.Coffee:
+                        return "Coffee";
+                    case (int)typesOfEvents.Concert:
+                        return "Concert";
+                    case (int)typesOfEvents.Lecture:
+                        return "Lecture";
+                    case (int)typesOfEvents.StudySession:
+                        return "Study Session";
+                }
+                return "Coffee";
+            } 
+            set
+            {
+                _eventType = int.Parse(value);
+            } 
+        }
+        private int _eventType = (int)typesOfEvents.Coffee;
         public List<Person> AttendingGuests { get; set; } = new List<Person>();
-        public Event(string name, string eventType, DateTime startTime, DateTime endTime)
+        public Event(string name, int eventType, DateTime startTime, DateTime endTime)
         {
             Name = name;
             StartTime = startTime;
             EndTime = endTime;
-            EventType = eventType;
+            _eventType = eventType;
         }
         public Event()
         {
@@ -65,19 +86,19 @@ namespace EventApp
                 switch (eventTypeName)
                 {
                     case "coffee":
-                        EventType = "Coffee";
+                        _eventType = (int)typesOfEvents.Coffee;
                         return;
 
                     case "lecture":
-                        EventType = "Lecture";
+                        _eventType=(int)typesOfEvents.Lecture;
                         return;
 
                     case "concert":
-                        EventType = "Concert";
+                        _eventType = (int)typesOfEvents.Concert;
                         return;
 
                     case "study session":
-                        EventType = "Study Session";
+                        _eventType = (int)typesOfEvents.StudySession;
                         return;
 
                     default:
