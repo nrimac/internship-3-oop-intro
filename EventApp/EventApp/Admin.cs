@@ -44,18 +44,13 @@ namespace EventApp
         }
         public static void PrintEvents(Dictionary<Event, List<Person>> eventsGuests)
         {
-            if (eventsGuests.Count == 0)
+            
+            Console.WriteLine("Popis eventova:");
+            foreach (var item in eventsGuests)
             {
-                Console.WriteLine("Nema upisanih eventova.");
+                Console.WriteLine(item.Key.Name);
             }
-            else
-            {
-                Console.WriteLine("Popis eventova:");
-                foreach (var item in eventsGuests)
-                {
-                    Console.WriteLine(item.Key.Name);
-                }
-            }
+            
 
             Console.WriteLine();
         }
@@ -150,6 +145,14 @@ namespace EventApp
         }
         public static void DeleteEvent(Dictionary<Event, List<Person>> eventsGuests)
         {
+            if (eventsGuests.Count == 0)
+            {
+                Console.WriteLine("Nema upisanih eventova.");
+
+                EndText();
+                return;
+            }
+
             if (Confirm() == true)
             {
                 PrintEvents(eventsGuests);
@@ -175,6 +178,14 @@ namespace EventApp
         }
         public static void EditEvent(Dictionary<Event, List<Person>> eventsGuests)
         {
+            if (eventsGuests.Count == 0)
+            {
+                Console.WriteLine("Nema upisanih eventova.");
+
+                EndText();
+                return;
+            }
+
             if (Confirm() == true)
             {
                 PrintEvents(eventsGuests);
@@ -358,6 +369,14 @@ namespace EventApp
         }
         public static void AddGuest(List<Person> allPeople,Dictionary<Event,List<Person>> eventsGuests)
         {
+            if (eventsGuests.Count == 0)
+            {
+                Console.WriteLine("Nema upisanih eventova.");
+
+                EndText();
+                return;
+            }
+
             if (Confirm() == true)
             {
                 PrintEvents(eventsGuests);
@@ -479,6 +498,14 @@ namespace EventApp
         }
         public static void RemoveGuest(List<Person> allPeople, Dictionary<Event, List<Person>> eventsGuests)
         {
+            if (eventsGuests.Count == 0)
+            {
+                Console.WriteLine("Nema upisanih eventova.");
+
+                EndText();
+                return;
+            }
+
             if (Confirm() == true)
             {
                 PrintEvents(eventsGuests);
@@ -526,6 +553,14 @@ namespace EventApp
         }
         public static void EventDetails(Dictionary<Event, List<Person>> eventsGuests)
         {
+            if (eventsGuests.Count == 0)
+            {
+                Console.WriteLine("Nema upisanih eventova.");
+
+                EndText();
+                return;
+            }
+
             while (true)
             {
                 switch (EditEventMenu())
