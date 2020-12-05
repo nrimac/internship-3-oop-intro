@@ -84,9 +84,9 @@ namespace EventApp
         }
         public static bool EventExists(Dictionary<Event, List<Person>> eventsGuests, string name)
         {
-            foreach (var Event in eventsGuests)
+            foreach (var item in eventsGuests)
             {
-                if (name.ToLower().Trim() == Event.Key.Name.ToLower().Trim())
+                if (name.ToLower().Trim() == item.Key.Name.ToLower().Trim())
                     return true;
             }
             return false;
@@ -129,7 +129,7 @@ namespace EventApp
                     return;
                 }
 
-                if(newEvent.EndTime<newEvent.StartTime)
+                if(newEvent.EndTime<=newEvent.StartTime)
                 {
                     Console.WriteLine("Vrijeme završetka ne može biti nakon vremena početka eventa!\nEvent neće biti dodan!");
 
@@ -155,24 +155,11 @@ namespace EventApp
 
             if (Confirm() == true)
             {
-                PrintEvents(eventsGuests);
+                var chosenEvent = PickEvent(eventsGuests);
 
-                Console.WriteLine("Koji event zelite izbrisati:");
-                var userChoice = Console.ReadLine();
+                eventsGuests.Remove(chosenEvent);
 
-                foreach (var item in eventsGuests)
-                {
-                    if (userChoice.ToLower().Trim() == item.Key.Name.ToLower().Trim())
-                    {
-                        eventsGuests.Remove(item.Key);
-                        Console.WriteLine("Event izbrisan!");
-
-                        EndText();
-                        return;
-                    }
-                }
-
-                Console.WriteLine("Event s upisanim imenom ne postoji!");
+                Console.WriteLine("Event izbrisan!");
                 EndText();
             }
         }
@@ -188,24 +175,11 @@ namespace EventApp
 
             if (Confirm() == true)
             {
-                PrintEvents(eventsGuests);
+                var chosenEvent = PickEvent(eventsGuests);
 
-                Console.WriteLine("Unesite ime eventa koji želite urediti:");
-                var userChoice = Console.ReadLine();
+                EditEventChoice(chosenEvent, eventsGuests);
 
-                foreach (var item in eventsGuests)
-                {
-                    if (userChoice.Trim().ToLower() == item.Key.Name.Trim().ToLower())
-                    {
-                        EditEventChoice(item.Key, eventsGuests);
-
-                        EndText();
-                        return;
-                    }
-                }
-
-                Console.WriteLine("Event s upisanim imenom ne postoji!");
-                EndText();
+                return;
             }
         }
         public static void EditEventChoice(Event eventToEdit, Dictionary<Event, List<Person>> eventsGuests)
@@ -220,18 +194,7 @@ namespace EventApp
 
             do
             {
-                while (true)
-                {
-                    try
-                    {
-                        userChoice = int.Parse(Console.ReadLine());
-                        break;
-                    }
-                    catch
-                    {
-                        Console.WriteLine("Mozete unijeti samo broj!");
-                    }
-                }
+                userChoice = NumberEntry();
 
                 switch (userChoice)
                 {
@@ -379,12 +342,9 @@ namespace EventApp
 
             if (Confirm() == true)
             {
-                PrintEvents(eventsGuests);
+                var chosenEvent = PickEvent(eventsGuests);
 
-                Console.WriteLine("Upišite ime eventa na koji želite dodati osobu:");
-                var nameOfEvent = Console.ReadLine();
-
-                if(EventExists(eventsGuests,nameOfEvent)==true)
+                if(EventExists(eventsGuests,chosenEvent.Name)==true)
                 {
                     Console.WriteLine("Unesite 0 ako želite dodati novu osobu ili 1 ako želite dodati postojeću osobu:");
                     int userChoice;
@@ -414,7 +374,7 @@ namespace EventApp
 
                         allPeople.Add(newPerson);
 
-                        AddGuestToEvent(eventsGuests,nameOfEvent,newPerson);
+                        AddGuestToEvent(chosenEvent,newPerson);
 
                         EndText();
                         return;
@@ -432,7 +392,7 @@ namespace EventApp
                         {
                             if(Person.OIB==personalIdNumber)
                             {
-                                if(PersonIsInEvent(Person,nameOfEvent,eventsGuests))
+                                if(PersonIsInEvent(Person,chosenEvent))
                                 {
                                     Console.WriteLine("Osoba je već na eventu!");
 
@@ -440,7 +400,9 @@ namespace EventApp
                                     return;
                                 }
 
-                                AddGuestToEvent(eventsGuests, nameOfEvent, Person);
+                                AddGuestToEvent(chosenEvent, Person);
+                                EndText();
+                                return;
                             }
                         }
 
@@ -455,16 +417,11 @@ namespace EventApp
                 EndText();
             }
         }
-        public static void AddGuestToEvent(Dictionary<Event, List<Person>> eventsGuests,string nameOfEvent,Person aPerson)
+        public static void AddGuestToEvent(Event chosenEvent ,Person aPerson)
         {
-            foreach (var Event in eventsGuests)
-            {
-                if (Event.Key.Name.Trim().ToLower() == nameOfEvent.Trim().ToLower())
-                {
-                    Event.Value.Add(aPerson);
-                    Console.WriteLine("Osoba dodana!");
-                }
-            }
+            chosenEvent.AttendingGuests.Add(aPerson);
+
+            Console.WriteLine("Osoba dodana");
         }
         public static bool PersonExists(Person aPerson,List<Person> allPeople)
         {
@@ -478,20 +435,12 @@ namespace EventApp
 
             return false;
         }
-        public static bool PersonIsInEvent(Person aPerson, string nameOfEvent, Dictionary<Event, List<Person>> eventsGuests)
+        public static bool PersonIsInEvent(Person aPerson, Event chosenEvent)
         {
-            foreach (var Event in eventsGuests)
+            foreach(var Person in chosenEvent.AttendingGuests)
             {
-                if(Event.Key.Name.ToLower().Trim()==nameOfEvent.Trim().ToLower())
-                {
-                    foreach (var Guest in Event.Value)
-                    {
-                        if(Guest.OIB==aPerson.OIB)
-                        {
-                            return true;
-                        }
-                    }
-                }
+                if (aPerson == Person)
+                    return true;
             }
 
             return false;
@@ -508,47 +457,34 @@ namespace EventApp
 
             if (Confirm() == true)
             {
-                PrintEvents(eventsGuests);
-                Console.WriteLine("Odaberite event s kojeg želite maknuti osobu:");
+                var chosenEvent = PickEvent(eventsGuests);
 
-                var nameOfEvent = Console.ReadLine();
-
-                if (EventExists(eventsGuests, nameOfEvent))
+                if(chosenEvent.AttendingGuests.Count==0)
                 {
-                    Console.WriteLine("Upisite OIB osobe koju želite maknuti:");
-                    PrintPeople(allPeople);
-                    var personalIdNumber = NumberEntry();
+                    Console.WriteLine("Odabrani event nema nikoga u sebi!");
 
-                    foreach (var Person in allPeople)
-                    {
-                        if (Person.OIB == personalIdNumber)
-                        {
-                            if (PersonIsInEvent(Person, nameOfEvent, eventsGuests))
-                            {
-                                foreach (var Event in eventsGuests)
-                                {
-                                    if (Event.Key.Name.Trim().ToLower() == nameOfEvent.Trim().ToLower())
-                                    {
-                                        Event.Value.Remove(Person);
-                                        Console.WriteLine("Osoba maknuta s eventa!");
-
-                                        EndText();
-                                        return;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    Console.WriteLine("Osoba već nije na eventu!");
                     EndText();
                     return;
                 }
-                else
+
+                Console.WriteLine("Upisite OIB osobe koju želite maknuti:");
+
+                PrintPeople(chosenEvent.AttendingGuests);
+
+                var personalIdNumber = NumberEntry();
+
+                foreach (var Person in chosenEvent.AttendingGuests)
                 {
-                    Console.WriteLine("Upisani event ne postoji!");
-                    EndText();
-                }
+                    if (Person.OIB == personalIdNumber)
+                    {
+                        chosenEvent.AttendingGuests.Remove(Person);
+                        
+                        Console.WriteLine("Osoba maknuta s eventa!");
+
+                        EndText();
+                        return;
+                    }
+                }   
             }
         }
         public static void EventDetails(Dictionary<Event, List<Person>> eventsGuests)
@@ -598,8 +534,8 @@ namespace EventApp
             {
                  if (userChoice.Name.Trim().ToLower() == item.Key.Name.Trim().ToLower())
                  { 
-                    Console.WriteLine("{0} - {1}\nPočetak: {2}\nKraj: {3}\nTrajanje(u satima): {4}\n{5} osoba dolazi na event", item.Key.Name, item.Key.EventType,
-                    item.Key.StartTime, item.Key.EndTime, Duration(item.Key).Hours, item.Value.Count);
+                    Console.WriteLine("{0} - {1}\nPočetak: {2}\nKraj: {3}\nTrajanje: {4}\n{5} osoba dolazi na event", item.Key.Name, item.Key.EventType,
+                    item.Key.StartTime, item.Key.EndTime, Duration(item.Key), item.Value.Count);
 
                     return userChoice;
                  }
@@ -607,17 +543,30 @@ namespace EventApp
 
             return userChoice;
         }
-        public static TimeSpan Duration(Event someEvent)
+        public static string Duration(Event someEvent)
         {
             TimeSpan duration = someEvent.EndTime - someEvent.StartTime;
 
-            return duration;
+            if (duration.Days > 0)
+                return string.Format("{0} dana {1} sati {2} minuta", duration.Days, duration.Hours, duration.Minutes);
+            if (duration.Hours > 0)
+                return string.Format("{0} sati {1} minuta", duration.Hours, duration.Minutes);
+            if (duration.Minutes > 0)
+                return string.Format("{0} minuta", duration.Minutes);
+            return string.Format("0 minuta");
         }
         public static void PrintAttendingGuests(Dictionary<Event, List<Person>> eventsGuests, Event pickedEvent)
         {
             Console.WriteLine("Popis gostiju:");
 
-            PrintPeople(pickedEvent.AttendingGuests);
+            if (pickedEvent.AttendingGuests.Count == 0)
+            {
+                Console.WriteLine("*prazan*");
+            }
+            else
+            {
+                PrintPeople(pickedEvent.AttendingGuests);
+            }
 
             EndText();
         }

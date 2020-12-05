@@ -22,12 +22,29 @@ namespace EventApp
                         return "Lecture";
                     case (int)typesOfEvents.StudySession:
                         return "Study Session";
+                    default:
+                        return "Coffee";
                 }
-                return "Coffee";
             } 
             set
             {
-                _eventType = int.Parse(value);
+                switch (value.Trim().ToLower())
+                {
+                    case "coffee":
+                        _eventType = (int)typesOfEvents.Coffee;
+                        break;
+                    case "concert":
+                        _eventType = (int)typesOfEvents.Concert;
+                        break;
+                    case "lecture":
+                        _eventType = (int)typesOfEvents.Lecture;
+                        break;
+                    case "study session":
+                        _eventType = (int)typesOfEvents.StudySession;
+                        break;
+                    default:
+                        break;
+                }
             } 
         }
         private int _eventType = (int)typesOfEvents.Coffee;
@@ -48,7 +65,7 @@ namespace EventApp
             Console.Write("Unesite ime novoga eventa:");
             Name = Console.ReadLine();
 
-            Console.Write("Unesite datum i vrijeme početka novoga eventa:");
+            Console.Write("Unesite datum i vrijeme početka novoga eventa (Format: yyyy/mm/dd hh/minmin):");
 
             while (true)
             {
@@ -63,7 +80,7 @@ namespace EventApp
                 }
             }
 
-            Console.Write("Unesite datum i vrijeme završetka novoga eventa:");
+            Console.Write("Unesite datum i vrijeme završetka novoga eventa(Format: yyyy/mm/dd hh/minmin):");
 
             while (true)
             {
